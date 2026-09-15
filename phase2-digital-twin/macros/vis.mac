@@ -1,0 +1,28 @@
+# Phase 2 Visualization
+/vis/open OGL 800x600-0+0
+/vis/drawVolume
+
+# View from the side (looking along -Y axis) to see full geometry
+/vis/viewer/set/viewpointVector 0 -1 0
+/vis/viewer/set/upVector 0 0 1
+/vis/viewer/set/lightsVector -1 -1 0
+/vis/viewer/set/style surface
+/vis/viewer/set/background white
+
+# Trajectory settings
+/vis/scene/add/trajectories smooth
+/vis/scene/endOfEventAction accumulate 100
+
+/vis/viewer/set/autoRefresh true
+/vis/verbose errors
+
+# Colour the key volumes for clarity
+# (use /vis/geometry/set/colour <volume> <depth> R G B A)
+/vis/geometry/set/colour NaICrystal   0 0.2 0.6 1.0 0.8
+/vis/geometry/set/colour SourceColl   0 0.5 0.5 0.5 0.5
+/vis/geometry/set/colour MidColl      0 0.5 0.5 0.5 0.5
+/vis/geometry/set/colour PbCastle     0 0.4 0.4 0.4 0.4
+/vis/geometry/set/colour Target       0 0.0 0.8 0.3 0.9
+/vis/geometry/set/colour CuLining     0 0.8 0.4 0.0 0.6
+/vis/geometry/set/colour SnLining     0 0.6 0.6 0.7 0.6
+/vis/geometry/set/colour AlHousing    0 0.7 0.7 0.7 0.5

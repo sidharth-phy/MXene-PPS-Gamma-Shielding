@@ -1,0 +1,10 @@
+# Phase 2 — ShieldingExactTwin batch macro
+# This file is overwritten by run_phase2.py for each simulation run.
+# It sets the output file, material, thickness, source energy, and fires.
+
+/output/setFile          spectrum_PPS_2mm_662.csv
+/shielding/setMaterial   PPS_0Wt
+/shielding/setThickness  2 mm
+/run/initialize
+/gun/energy              662 keV
+/run/beamOn              10000000
