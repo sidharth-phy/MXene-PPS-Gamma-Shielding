@@ -1,0 +1,9 @@
+# Macro file for the visualization setting
+/vis/open OGL 600x600-0+0
+/vis/drawVolume
+/vis/viewer/set/viewpointVector -1 0 0
+/vis/viewer/set/lightsVector -1 0 0
+/vis/viewer/set/style surface
+/vis/scene/add/trajectories smooth
+/vis/scene/endOfEventAction accumulate
+/vis/viewer/set/autoRefresh true

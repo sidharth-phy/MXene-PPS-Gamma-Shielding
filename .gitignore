@@ -1,0 +1,10 @@
+build/
+*.o
+*.so
+__pycache__/
+*.pyc
+temp.mac
+temp_p2.mac
+spectra/
+*.root
+.DS_Store
