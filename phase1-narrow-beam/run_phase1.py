@@ -1,3 +1,15 @@
+"""
+Phase 1 narrow-beam run driver.
+
+Run from the build directory, beside the compiled ./shielding executable:
+
+    python3 run_phase1.py              # 930 production runs, 31 formulations
+    python3 run_phase1.py --calibration  # 60 calibration runs, G4_Pb and G4_W
+
+The production pass writes Phase1_Master_Dataset.txt and the calibration pass
+writes Calibration_Master_Dataset.txt.
+"""
+
 import subprocess
 import re
 import os
@@ -15,15 +27,24 @@ materials = [
     "Ti3C2O2_5Wt", "Ti3C2O2_10Wt", "Ti3C2O2_15Wt", "Ti3C2O2_20Wt", "Ti3C2O2_25Wt", "Ti3C2O2_30Wt"
 ]
 
+# The two native Geant4 single-element materials used for calibration
+calibration_materials = ["G4_Pb", "G4_W"]
+
+CALIBRATION = "--calibration" in sys.argv
+if CALIBRATION:
+    materials = calibration_materials
+
 # 10^7 histories for statistical precision
 photons_to_fire = 10000000 
 
-txt_filename = "Phase1_Master_Dataset.txt"
+txt_filename = "Calibration_Master_Dataset.txt" if CALIBRATION else "Phase1_Master_Dataset.txt"
+total_runs = len(materials) * len(energies_keV) * 5
 
 # Set up the TXT file with a clean, readable header
 with open(txt_filename, mode='w') as file:
-    file.write("Phase 1: Comprehensive Shielding Master Data\n")
-    file.write(f"Photons Fired per run: {photons_to_fire} | Total Runs: 930\n")
+    file.write("Calibration Phase: 100% Pure NIST Elements\n" if CALIBRATION
+               else "Phase 1: Comprehensive Shielding Master Data\n")
+    file.write(f"Photons Fired per run: {photons_to_fire} | Total Runs: {total_runs}\n")
     file.write("=" * 115 + "\n")
     file.write(f"{'Energy (keV)':<15} | {'Material':<15} | {'Thickness (mm)':<15} | {'I_0':<10} | {'I':<10} | {'Ratio (I/I_0)':<15} | {'Abs. Poisson Error'}\n")
     file.write("-" * 115 + "\n")
@@ -40,7 +61,8 @@ for energy in energies_keV:
             print(f"Running {mat} at {thick} mm ({energy} keV)...")
 
             with open("temp.mac", "w") as f:
-                # FIX: Set the parameters FIRST, then initialize!
+                # The material and thickness are set before /run/initialize, so
+                # the geometry is built with the values this run needs.
                 f.write(f"/shielding/setMaterial {mat}\n")
                 f.write(f"/shielding/setThickness {thick} mm\n")
                 f.write("/run/initialize\n")
@@ -54,19 +76,25 @@ for energy in energies_keV:
 
             i_0_match = re.search(r"Primary Photons Fired \(I_0\):\s+(\d+)", output)
             i_match = re.search(r"Surviving Photons \(I\):\s+(\d+)", output)
-            ratio_match = re.search(r"Transmission Ratio \(I/I_0\):\s+([\d.]+)", output)
+            # The exponent must be part of the match: Geant4 prints the ratio in
+            # scientific notation once it falls below 1e-4, and a [\d.]+ class
+            # would silently discard it.
+            ratio_match = re.search(r"Transmission Ratio \(I/I_0\):\s+([\deE.+-]+)", output)
 
             if ratio_match and i_match and i_0_match:
                 i_val = int(i_match.group(1))
                 i_0_val = int(i_0_match.group(1))
-                ratio_val = float(ratio_match.group(1))
+                # Recompute the ratio from the integer counts rather than trusting
+                # the formatted value, so the column is exact at every magnitude.
+                ratio_val = i_val / i_0_val if i_0_val else 0.0
 
                 poisson_error = (math.sqrt(i_val) / i_0_val) if i_val > 0 else 0.0
 
                 with open(txt_filename, mode='a') as file:
-                    file.write(f"{str(energy):<15} | {mat:<15} | {str(thick):<15} | {str(i_0_val):<10} | {str(i_val):<10} | {str(ratio_val):<15} | {poisson_error:.8f}\n")
+                    ratio_str = f"{ratio_val:.6f}" if ratio_val >= 1e-4 else f"{ratio_val:.3e}"
+                    file.write(f"{str(energy):<15} | {mat:<15} | {str(thick):<15} | {str(i_0_val):<10} | {str(i_val):<10} | {ratio_str:<15} | {poisson_error:.8f}\n")
             else:
-                # DEBUG MODE: Expose the Geant4 Crash
+                # Print whatever Geant4 wrote before it stopped
                 print(f"\n[!] CRITICAL ERROR: Geant4 failed to run {mat} at {thick}mm.")
                 print("--- GEANT4 CRASH LOG ---")
                 print(error_log)

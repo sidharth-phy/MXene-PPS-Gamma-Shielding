@@ -108,7 +108,7 @@ void DetectorConstruction::DefineMaterials()
 
     // ══════════════════════════════════════════════════════════
     // W / PPS COMPOSITES
-    // Density: 1/ρ = wW/19.30 + wPPS/1.35
+    // Density: 1/ρ = wW/19.25 + wPPS/1.35
     // ══════════════════════════════════════════════════════════
     G4Material* W_5Wt  = new G4Material("W_5Wt",  1.4158*g/cm3, 4);
     W_5Wt->AddElement(elC,0.6330); W_5Wt->AddElement(elH,0.0354);
@@ -136,7 +136,7 @@ void DetectorConstruction::DefineMaterials()
 
     // ══════════════════════════════════════════════════════════
     // Ti3C2O2 (MXene) / PPS COMPOSITES
-    // MXene MW = 3×47.867 + 2×12.011 + 2×15.999 = 207.823 g/mol
+    // MXene MW = 3×47.867 + 2×12.011 + 2×15.999 = 199.621 g/mol
     // ══════════════════════════════════════════════════════════
     G4Material* Ti_5Wt  = new G4Material("Ti3C2O2_5Wt",  1.4027*g/cm3, 5);
     Ti_5Wt->AddElement(elC,0.6390); Ti_5Wt->AddElement(elH,0.0354);
@@ -181,7 +181,8 @@ void DetectorConstruction::DefineMaterials()
     //
     // NOTE: Total S = S from PPS + S from BaSO4 (combined as one element).
     //       O in composites comes entirely from BaSO4 (PPS has no O).
-    //       All fractions verified to sum to 1.0000.
+    //       Fractions are quoted to four decimals and a few sets sum to
+    //       1.0000 +/- 0.0001, which Geant4 renormalises with a warning.
     // ══════════════════════════════════════════════════════════
 
     G4Material* BaSO4_5Wt  = new G4Material("BaSO4_5Wt",  1.3990*g/cm3, 5);
@@ -239,7 +240,8 @@ void DetectorConstruction::DefineMaterials()
     //
     // NOTE: O in composites comes entirely from Bi2O3 (PPS has no O).
     //       Bi is unique to this composite family — no cross-contamination.
-    //       All fractions verified to sum to 1.0000.
+    //       Fractions are quoted to four decimals and a few sets sum to
+    //       1.0000 +/- 0.0001, which Geant4 renormalises with a warning.
     // ══════════════════════════════════════════════════════════
 
     G4Material* Bi2O3_5Wt  = new G4Material("Bi2O3_5Wt",  1.4098*g/cm3, 5);
