@@ -30,7 +30,8 @@ private:
     G4VPhysicalVolume*  fTargetPhysical;
     G4Tubs*             fCurrentSolid;
 
-    // THE FIX: store material as a STRING, not a pointer.
+    // The material is stored by name, not as a pointer, so the geometry can be
+    // rebuilt when /shielding/setMaterial is issued before /run/initialize.
     // Pointer lookup (G4Material::GetMaterial) happens in ConstructVolumes()
     // AFTER DefineMaterials() has run — not in SetTargetMaterial().
     G4String  fMaterialName;

@@ -16,7 +16,8 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
     fParticleGun->SetParticleDefinition(gamma);
 
     // Source position: on Z-axis, 10 cm behind the sample disc
-    // This is at the back face of the source collimator Pb block.
+    // The source collimator block spans z = -7.5 cm to -2.5 cm, so the gun sits
+  // 2.5 cm of air upstream of its rear face.
     fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., -10.*cm));
 
     // Pencil beam along +Z axis.

@@ -13,7 +13,7 @@
 #include "FTFP_BERT.hh"
 #include "G4EmLivermorePhysics.hh" 
 
-// MULTITHREADING FIX: The Action Initialization Wrapper
+// Action initialisation wrapper, required for multithreaded builds
 #include "G4VUserActionInitialization.hh"
 
 class ActionInitialization : public G4VUserActionInitialization {
@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
     physicsList->ReplacePhysics(new G4EmLivermorePhysics());
     runManager->SetUserInitialization(physicsList);
 
-    // MULTITHREADING FIX: Load the wrapper instead of the direct actions
+    // Register the wrapper rather than the actions directly
     runManager->SetUserInitialization(new ActionInitialization());
 
     G4UImanager* UImanager = G4UImanager::GetUIpointer();

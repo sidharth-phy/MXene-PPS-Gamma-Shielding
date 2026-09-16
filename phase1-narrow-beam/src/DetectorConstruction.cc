@@ -13,7 +13,7 @@ DetectorConstruction::DetectorConstruction()
   fTargetLogical(nullptr), fDetectorLogical(nullptr), fTargetPhysical(nullptr),
   fCurrentMaterial(nullptr), fTargetThickness(2.0*mm)
 {
-    // FIX: Load materials into memory the moment the app boots!
+    // Materials are built at construction, before any geometry is placed
     DefineMaterials();
 
     fMessenger = new G4GenericMessenger(this, "/shielding/", "Target control commands");

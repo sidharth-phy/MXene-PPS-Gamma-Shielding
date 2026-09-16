@@ -17,15 +17,16 @@ set_target_properties(shielding PROPERTIES CXX_STANDARD 17)
 #   - Output CSV files are written relative to CWD (the build directory)
 #   - Macro files (run.mac, vis.mac) are loaded relative to CWD
 foreach(_script
-        run.mac
-        vis.mac
-        init_vis.mac
-        run_phase2.py          # <-- FIX: was missing, caused "No such file" error
-        quick_check_phase2.py  # <-- FIX: was missing, caused "No such file" error
+        macros/run.mac
+        macros/vis.mac
+        macros/init_vis.mac
+        run_phase2.py
+        quick_check_phase2.py
         )
+    get_filename_component(_name ${_script} NAME)
     configure_file(
         ${PROJECT_SOURCE_DIR}/${_script}
-        ${PROJECT_BINARY_DIR}/${_script}
+        ${PROJECT_BINARY_DIR}/${_name}
         COPYONLY
     )
 endforeach()

@@ -1,0 +1,2 @@
+# Only the analysis scripts need a third-party package.
+pandas>=1.3

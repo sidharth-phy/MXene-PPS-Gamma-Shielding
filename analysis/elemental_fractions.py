@@ -1,4 +1,3 @@
-import pandas as pd
 
 # 1. Elemental mass fractions of pure matrix and fillers
 # Calculated from standard molar masses

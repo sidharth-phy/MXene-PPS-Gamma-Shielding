@@ -66,7 +66,7 @@ void RunAction::EndOfRunAction(const G4Run* run)
 
     file << "# Phase 2 NaI(Tl) energy spectrum\n";
     file << "# Total histories: " << nEvents << "\n";
-    file << "# Format: bin_centre_keV, counts\n";
+    file << "# Format: bin_lower_edge_keV, counts\n";
     file << "# Bin width: 1 keV/bin  |  Range: 0-1499 keV\n";
 
     G4long totalCounts = 0;

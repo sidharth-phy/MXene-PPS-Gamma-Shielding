@@ -1,15 +1,15 @@
 """
 quick_check_phase2.py  —  Phase 2 sanity check before full campaign
 ====================================================================
-Runs FOUR cases (not three — the original was missing a 59.5 keV baseline):
+Runs four cases, including a 59.5 keV air baseline:
 
   1. Baseline at 662 keV   (I0 for Cs-137 check)
-  2. Baseline at 59.5 keV  (I0 for Am-241 check)  ← FIX: was missing!
+  2. Baseline at 59.5 keV  (I0 for the Am-241 check)
   3. PPS_0Wt 2 mm at 662 keV  (lightest attenuator — expect ~97% ratio)
   4. Pb_30Wt 2 mm at 59.5 keV (heaviest attenuator — significant attenuation)
 
 Run this from the BUILD directory (where ./shielding lives):
-    cd ~/ShieldingExactTwin/build
+    cd build   # the directory holding the compiled ./shielding executable
     python3 quick_check_phase2.py
 
 If all four look physically sensible, run run_phase2.py for the full campaign.
@@ -67,7 +67,7 @@ os.makedirs("qc_spectra", exist_ok=True)
 # ── 4-case check — BOTH energies have their own baselines ──────────────────
 cases = [
     ("G4_AIR",  2, 662,  "qc_spectra/baseline_662.csv"),
-    ("G4_AIR",  2, 59.5, "qc_spectra/baseline_59p5.csv"),   # FIX: added
+    ("G4_AIR",  2, 59.5, "qc_spectra/baseline_59p5.csv"),
     ("PPS_0Wt", 2, 662,  "qc_spectra/PPS_2mm_662.csv"),
     ("Pb_30Wt", 2, 59.5, "qc_spectra/Pb30_2mm_59p5.csv"),
 ]
@@ -96,7 +96,7 @@ print("  RESULTS SUMMARY")
 print("=" * 60)
 
 I0_662  = spectra.get(("G4_AIR",  662),  1)
-I0_59p5 = spectra.get(("G4_AIR",  59.5), 1)   # FIX: now uses its own measured baseline
+I0_59p5 = spectra.get(("G4_AIR",  59.5), 1)   # its own measured baseline
 I_PPS   = spectra.get(("PPS_0Wt", 662),  0)
 I_Pb30  = spectra.get(("Pb_30Wt", 59.5), 0)
 
@@ -127,7 +127,7 @@ print(f"  Pb_30Wt 2mm at 59.5 keV — Observed: {ratio_pb30:.4f}  "
 
 print()
 print("  NOTE: Phase 2 values differ from Phase 1 because:")
-print("   - Air attenuation (5% effect over 25 cm at 59.5 keV)")
+print("   - Air attenuation (about 0.3 % over the 15.05 cm path at 59.5 keV)")
 print("   - Collimator geometry filters some small-angle scatter")
 print("   - Detector response (Gaussian broadening) affects peak integration")
 print("  This is expected — Phase 2 simulates real lab conditions.")

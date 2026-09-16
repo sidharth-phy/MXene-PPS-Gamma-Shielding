@@ -33,10 +33,13 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
         return;  // No need to do anything else for NaI steps
     }
 
-    // ── Efficiency optimisation: kill low-energy secondaries in heavy Pb ──
-    // Compton electrons and photoelectrons created inside the Pb collimators
-    // have a range of <1 mm and will never reach the NaI. Killing them here
-    // saves CPU time without affecting the physics result.
+    // ── Secondary suppression in the lead volumes ──
+    // Every secondary created inside the lead collimators and the castle is
+    // terminated, charged and neutral alike. Charged secondaries there have a
+    // range well under 1 mm and could not reach the crystal in any case. Lead
+    // fluorescence photons could, so suppressing them also removes the
+    // fluorescence background, which is why the graded-Z shells make no
+    // measurable contribution in these runs. This is stated in the manuscript.
     if (volName == "SourceColl" || volName == "MidColl" || volName == "PbCastle") {
         G4Track* track = step->GetTrack();
         if (track->GetTrackID() != 1) {         // Not the primary photon
