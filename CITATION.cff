@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: If you use this software or these datasets, please cite the associated manuscript.
+type: software
+title: Geant4 simulation code and datasets for Ti3C2O2 MXene / PPS gamma-ray shielding composites
+abstract: >-
+  Two-phase Geant4 Monte Carlo study of oxygen-terminated Ti3C2O2 MXene in a
+  polyphenylene sulphide matrix, benchmarked against Pb, W, BaSO4 and Bi2O3
+  fillers across six gamma energies, five thicknesses and six filler loadings.
+authors:
+  - family-names: Suresh
+    given-names: Sidharth
+version: 1.0.0
+date-released: 2026-09-16
+repository-code: https://github.com/sidharth-phy/MXene-PPS-Gamma-Shielding
+url: https://github.com/sidharth-phy/MXene-PPS-Gamma-Shielding
+license: MIT
+keywords:
+  - gamma-ray shielding
+  - MXene
+  - Ti3C2O2
+  - polyphenylene sulphide
+  - Geant4
+  - Monte Carlo
+  - linear attenuation coefficient
+  - NIST XCOM
