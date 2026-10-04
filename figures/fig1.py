@@ -1,142 +1,166 @@
 # -*- coding: utf-8 -*-
-"""Figure 1: side projection of the oxygen-terminated Ti3C2O2 MXene monolayer,
-drawn to scale from the lattice parameters used in the manuscript:
-in-plane constant a = 3.083 A, monolayer thickness 5.808 A (ref [18]).
+"""Figure 1: side projection of the oxygen-terminated Ti3C2O2 MXene monolayer.
 
-The sheet is the five-atom Ti-C-Ti-C-Ti stack with an oxygen terminating the
-outer titanium on each face. Positions are computed, not drawn by hand."""
+The drawing is set by the two lattice parameters quoted in Section 2.5.2 of the
+manuscript, the in-plane constant a = 3.083 A and the single-layer thickness of
+5.808 A taken from the first-principles monolayer of reference [18]. The five
+atomic planes of the Ti-C-Ti-C-Ti core are spaced evenly between the two oxygen
+planes, which carry the full thickness between them, and successive planes are
+offset in plane by a/2 so that every carbon sits in the hollow between the
+titanium atoms above and below it. Every coordinate here is computed from those
+two numbers. Nothing is placed by hand."""
 import matplotlib
 matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.patches import Circle
+from matplotlib.patches import Circle, FancyBboxPatch
 import matplotlib.patheffects as pe
 
-A_IN = 3.083          # A, in-plane lattice constant
-T_ML = 5.808          # A, monolayer thickness, outer O to outer O
-N_CELL = 5            # repeats drawn along the in-plane direction
+A_IN = 3.083           # A, in-plane lattice constant
+T_ML = 5.808           # A, single-layer thickness, outer oxygen to outer oxygen
+N_CELL = 5             # repeats drawn along the in-plane direction
 
-# layer heights, symmetric about z = 0, spanning the monolayer thickness
-Z = {'O_top':  T_ML / 2,
-     'Ti_top': T_ML / 2 - 1.05,
-     'C_top':  0.60,
-     'Ti_mid': 0.0,
-     'C_bot': -0.60,
-     'Ti_bot': -(T_ML / 2 - 1.05),
-     'O_bot': -T_ML / 2}
+G_TIO = 1.500          # A, vertical Ti to O separation
+G_TIC = (T_ML / 2 - G_TIO) / 2     # A, vertical Ti to C separation, so that
+#                                    G_TIO + 2*G_TIC is half the thickness
 
-COL = {'Ti': '#d4b43c', 'C': '#1a1a1a', 'O': '#e04a1f'}
-RAD = {'Ti': 0.62, 'C': 0.34, 'O': 0.46}
+Z = {'O_top':   T_ML / 2,
+     'Ti_top':  T_ML / 2 - G_TIO,
+     'C_top':   G_TIC,
+     'Ti_mid':  0.0,
+     'C_bot':  -G_TIC,
+     'Ti_bot': -(T_ML / 2 - G_TIO),
+     'O_bot':  -T_ML / 2}
 
-fig, ax = plt.subplots(figsize=(11.0, 9.6))
+COL = {'Ti': '#d9b63a', 'C': '#181818', 'O': '#e8471c'}
+RAD = {'Ti': 0.44, 'C': 0.27, 'O': 0.33}
 
-# in-plane x positions: Ti on one sublattice, C offset by half a cell
-x_ti = np.arange(N_CELL) * A_IN
-x_c = x_ti[:-1] + A_IN / 2
+fig, ax = plt.subplots(figsize=(11.4, 9.0))
 
-atoms = []
-for x in x_ti:
-    atoms += [(x, Z['O_top'], 'O'), (x, Z['Ti_top'], 'Ti'),
-              (x, Z['Ti_bot'], 'Ti'), (x, Z['O_bot'], 'O')]
-for x in x_c + A_IN / 2 - A_IN / 2:
-    pass
-for x in x_c:
-    atoms += [(x, Z['C_top'], 'C'), (x, Z['C_bot'], 'C')]
-for x in x_ti[:-1] + A_IN / 2:
-    atoms += [(x, Z['Ti_mid'], 'Ti')]
+# two in-plane sublattices, offset by half a cell
+x_a = np.arange(N_CELL) * A_IN                     # titanium columns
+x_b = x_a[:-1] + A_IN / 2                          # carbon columns
+
+ti_top = [(x, Z['Ti_top']) for x in x_a]
+ti_mid = [(x, Z['Ti_mid']) for x in x_a]
+ti_bot = [(x, Z['Ti_bot']) for x in x_a]
+c_top = [(x, Z['C_top']) for x in x_b]
+c_bot = [(x, Z['C_bot']) for x in x_b]
+o_top = [(x, Z['O_top']) for x in x_a]
+o_bot = [(x, Z['O_bot']) for x in x_a]
 
 
-def bond(p, q, c1, c2, lw=5.5):
+def rod(p, q, c1, c2, lw=7.0, dbl=False):
+    """Two-tone bond. dbl draws the pair of parallel rods used for Ti-O."""
+    if dbl:
+        dx, dy = q[0] - p[0], q[1] - p[1]
+        n = np.hypot(dx, dy)
+        ox, oy = -dy / n * 0.13, dx / n * 0.13
+        for s in (-1, 1):
+            rod((p[0] + s * ox, p[1] + s * oy), (q[0] + s * ox, q[1] + s * oy),
+                c1, c2, lw=lw * 0.52)
+        return
     xm, ym = (p[0] + q[0]) / 2, (p[1] + q[1]) / 2
-    ax.plot([p[0], xm], [p[1], ym], color=c1, lw=lw, solid_capstyle='round', zorder=2)
-    ax.plot([xm, q[0]], [ym, q[1]], color=c2, lw=lw, solid_capstyle='round', zorder=2)
+    ax.plot([p[0], xm], [p[1], ym], color=c1, lw=lw, solid_capstyle='butt', zorder=2)
+    ax.plot([xm, q[0]], [ym, q[1]], color=c2, lw=lw, solid_capstyle='butt', zorder=2)
 
 
-# Ti-C bonds within the stack, nearest neighbours only
-def nearest(src, dst, cut):
-    out = []
-    for a in src:
-        for b in dst:
-            if np.hypot(a[0] - b[0], a[1] - b[1]) < cut:
-                out.append((a, b))
-    return out
+def pairs(src, dst):
+    """Nearest neighbours between two planes: the half-cell offset makes the
+    separation sqrt((a/2)^2 + dz^2), so anything longer is not a bond."""
+    cut = np.hypot(A_IN / 2, abs(src[0][1] - dst[0][1])) * 1.05
+    return [(p, q) for p in src for q in dst
+            if np.hypot(p[0] - q[0], p[1] - q[1]) < cut]
 
 
-ti_top = [(x, Z['Ti_top']) for x in x_ti]
-ti_mid = [(x, Z['Ti_mid']) for x in x_ti[:-1] + A_IN / 2]
-ti_bot = [(x, Z['Ti_bot']) for x in x_ti]
-c_top = [(x, Z['C_top']) for x in x_c]
-c_bot = [(x, Z['C_bot']) for x in x_c]
+for (upper, eu), (lower, el_) in (((ti_top, 'Ti'), (c_top, 'C')),
+                                  ((c_top, 'C'), (ti_mid, 'Ti')),
+                                  ((ti_mid, 'Ti'), (c_bot, 'C')),
+                                  ((c_bot, 'C'), (ti_bot, 'Ti'))):
+    for p, q in pairs(upper, lower):
+        rod(p, q, COL[eu], COL[el_])
 
-for a, b in nearest(ti_top, c_top, 2.9):
-    bond(a, b, COL['Ti'], COL['C'])
-for a, b in nearest(ti_mid, c_top, 2.9):
-    bond(a, b, COL['Ti'], COL['C'])
-for a, b in nearest(ti_mid, c_bot, 2.9):
-    bond(a, b, COL['Ti'], COL['C'])
-for a, b in nearest(ti_bot, c_bot, 2.9):
-    bond(a, b, COL['Ti'], COL['C'])
-# Ti-O terminations, vertical
-for x in x_ti:
-    bond((x, Z['Ti_top']), (x, Z['O_top']), COL['Ti'], COL['O'], lw=5.0)
-    bond((x, Z['Ti_bot']), (x, Z['O_bot']), COL['Ti'], COL['O'], lw=5.0)
+for ti, ox in ((ti_top, o_top), (ti_bot, o_bot)):
+    for p, q in zip(ti, ox):
+        rod(p, q, COL['Ti'], COL['O'], lw=7.0, dbl=True)
 
-# layer guide lines
-for key, lab in [('Ti_top', None), ('Ti_mid', None), ('Ti_bot', None)]:
-    ax.plot([-1.4, x_ti[-1] + 1.4], [Z[key]] * 2, color='#9a9a9a', lw=0.9, zorder=1)
+# guide lines through the three titanium planes
+for key in ('Ti_top', 'Ti_mid', 'Ti_bot'):
+    ax.plot([-1.7, x_a[-1] + 1.7], [Z[key]] * 2, color='#b0b0b0', lw=1.0, zorder=1)
 
-# atoms, drawn back to front with a simple specular highlight
+
+def sphere(x, z, el):
+    """Flat colour with a soft highlight, built from concentric discs."""
+    r = RAD[el]
+    base = np.array(matplotlib.colors.to_rgb(COL[el]))
+    ax.add_patch(Circle((x, z), r, facecolor=COL[el], edgecolor='#2b2b2b',
+                        lw=1.0, zorder=4))
+    for i in range(10):
+        f = (i + 1) / 10.0
+        tint = base + (1.0 - base) * (0.62 * f)
+        ax.add_patch(Circle((x - r * 0.26 * f, z + r * 0.28 * f), r * (1 - 0.72 * f),
+                            facecolor=tint, edgecolor='none', zorder=4 + f * 0.1))
+
+
+atoms = ([(x, z, 'O') for x, z in o_top + o_bot]
+         + [(x, z, 'Ti') for x, z in ti_top + ti_mid + ti_bot]
+         + [(x, z, 'C') for x, z in c_top + c_bot])
 for x, z, el in sorted(atoms, key=lambda t: t[1]):
-    ax.add_patch(Circle((x, z), RAD[el], facecolor=COL[el], edgecolor='black',
-                        lw=0.9, zorder=4))
-    ax.add_patch(Circle((x - RAD[el] * 0.3, z + RAD[el] * 0.33), RAD[el] * 0.26,
-                        facecolor='white', alpha=0.45, edgecolor='none', zorder=5))
+    sphere(x, z, el)
 
 
 def lab(x, y, s, size=17, ha='center'):
     ax.text(x, y, s, fontsize=size, ha=ha, va='center', zorder=9,
-            path_effects=[pe.withStroke(linewidth=3.2, foreground='white')])
+            path_effects=[pe.withStroke(linewidth=3.4, foreground='white')])
 
 
 def arrow(x0, y0, x1, y1):
     ax.annotate('', xy=(x1, y1), xytext=(x0, y0), zorder=8,
-                arrowprops=dict(arrowstyle='-|>', color='black', lw=1.3))
+                arrowprops=dict(arrowstyle='-|>', color='black', lw=1.4))
 
 
-lab(-0.2, Z['O_top'] + 2.5, 'Oxygen (O)\nsurface termination')
-arrow(0.55, Z['O_top'] + 1.85, x_ti[1] - 0.25, Z['O_top'] + 0.55)
-lab(x_ti[-1] + 2.7, Z['C_top'] + 0.9, 'Carbon (C)\natoms', ha='center')
-arrow(x_ti[-1] + 1.75, Z['C_top'] + 0.45, x_c[-1] + 0.45, Z['C_top'] + 0.2)
-lab(-3.0, Z['Ti_top'], 'Titanium (Ti)\nlayers', ha='center')
-arrow(-1.9, Z['Ti_top'] - 0.1, -0.65, Z['Ti_top'])
+lab(x_a[1] + 0.3, Z['O_top'] + 2.45, 'Oxygen (O)\nsurface termination')
+arrow(x_a[1] + 0.3, Z['O_top'] + 1.75, x_a[1] + 0.12, Z['O_top'] + 0.62)
+lab(-3.3, Z['Ti_top'] + 1.5, 'Titanium (Ti)\nlayers')
+arrow(-2.5, Z['Ti_top'] + 0.95, -0.75, Z['Ti_top'] + 0.18)
+lab(x_b[-1] + 1.15, Z['O_top'] + 2.35, 'Carbon (C)\natoms')
+arrow(x_b[-1] + 0.7, Z['O_top'] + 1.65, x_b[-1] + 0.1, Z['C_top'] + 0.4)
+lab(x_a[2] + 1.5, Z['O_bot'] - 1.95, 'Ti surface layer')
+arrow(x_a[2] + 1.1, Z['O_bot'] - 1.5, x_a[2] + 0.4, Z['Ti_bot'] - 0.5)
 
-# thickness dimension
-xd = x_ti[-1] + 1.05
+# thickness dimension, outer oxygen plane to outer oxygen plane
+xd = x_a[-1] + 1.15
 ax.annotate('', xy=(xd, Z['O_top']), xytext=(xd, Z['O_bot']),
-            arrowprops=dict(arrowstyle='<->', color='black', lw=1.1))
+            arrowprops=dict(arrowstyle='<->', color='black', lw=1.2))
 for zz in (Z['O_top'], Z['O_bot']):
-    ax.plot([x_ti[-1], xd + 0.3], [zz, zz], color='black', lw=0.7)
-lab(xd + 0.55, 0.0, '%.3f Å' % T_ML, size=15, ha='left')
+    ax.plot([x_a[-1], xd + 0.35], [zz, zz], color='black', lw=0.8, zorder=3)
+lab(xd + 0.5, 0.0, '%.3f Å' % T_ML, size=15, ha='left')
 
 # in-plane lattice constant
-ya = Z['O_bot'] - 1.15
-ax.annotate('', xy=(x_ti[1], ya), xytext=(x_ti[0], ya),
-            arrowprops=dict(arrowstyle='<->', color='black', lw=1.1))
-for xx in (x_ti[0], x_ti[1]):
-    ax.plot([xx, xx], [ya - 0.28, ya + 0.28], color='black', lw=0.7)
-lab((x_ti[0] + x_ti[1]) / 2, ya - 0.72, 'a = %.3f Å' % A_IN, size=15)
+ya = Z['O_bot'] - 0.95
+ax.annotate('', xy=(x_a[1], ya), xytext=(x_a[0], ya),
+            arrowprops=dict(arrowstyle='<->', color='black', lw=1.2))
+for xx in (x_a[0], x_a[1]):
+    ax.plot([xx, xx], [ya - 0.3, ya + 0.3], color='black', lw=0.8)
+lab((x_a[0] + x_a[1]) / 2, ya - 0.72, 'a = %.3f Å' % A_IN, size=15)
 
-lab(x_ti[-1] * 0.5, Z['O_bot'] - 2.6, 'Ti$_3$C$_2$O$_2$', size=26)
+lab(x_a[-1] - 0.3, Z['O_bot'] - 2.75, 'Ti$_3$C$_2$O$_2$', size=28)
 
 # legend
-hx, hy = x_ti[-1] + 2.0, Z['O_bot'] + 0.4
+hx, hy = x_a[-1] + 3.15, Z['O_bot'] + 0.55
+ax.add_patch(FancyBboxPatch((hx - 0.85, hy - 2.55), 3.5, 3.2,
+                            boxstyle='round,pad=0.12', facecolor='white',
+                            edgecolor='#2b2b2b', lw=1.1, zorder=7))
+ax.text(hx + 0.9, hy + 0.32, 'Atom legend', fontsize=14, ha='center',
+        va='center', zorder=8, fontweight='bold')
 for i, (el, name) in enumerate([('Ti', 'Titanium'), ('C', 'Carbon'), ('O', 'Oxygen')]):
-    yy = hy - i * 0.95
-    ax.add_patch(Circle((hx, yy), 0.33, facecolor=COL[el], edgecolor='black', lw=0.9, zorder=6))
-    ax.text(hx + 0.6, yy, '%s  %s' % (el, name), fontsize=14, va='center', zorder=6)
+    yy = hy - 0.45 - i * 0.68
+    ax.add_patch(Circle((hx, yy), 0.27, facecolor=COL[el], edgecolor='#2b2b2b',
+                        lw=0.9, zorder=8))
+    ax.text(hx + 0.5, yy, '%s  %s' % (el, name), fontsize=13, va='center', zorder=8)
 
-ax.set_xlim(-4.6, x_ti[-1] + 6.4)
-ax.set_ylim(Z['O_bot'] - 3.6, Z['O_top'] + 3.4)
+ax.set_xlim(-5.2, x_a[-1] + 8.0)
+ax.set_ylim(Z['O_bot'] - 3.5, Z['O_top'] + 3.5)
 ax.set_aspect('equal')
 ax.axis('off')
 plt.tight_layout(pad=0.2)
