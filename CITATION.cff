@@ -9,9 +9,10 @@ abstract: >-
 authors:
   - family-names: Suresh
     given-names: Sidharth
-  - name: Alen
-version: 1.0.0
-date-released: 2026-09-16
+  - family-names: Vineeth
+    given-names: Bobba
+version: 1.1.0
+date-released: 2026-10-04
 repository-code: https://github.com/sidharth-phy/MXene-PPS-Gamma-Shielding
 url: https://github.com/sidharth-phy/MXene-PPS-Gamma-Shielding
 license: MIT

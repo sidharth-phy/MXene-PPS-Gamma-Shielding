@@ -43,7 +43,7 @@ int main(int argc, char** argv)
         ui = new G4UIExecutive(argc, argv);
     }
 
-    auto* runManager = G4RunManagerFactory::CreateRunManager();
+    auto* runManager = G4RunManagerFactory::CreateRunManager(G4RunManagerType::SerialOnly);
     runManager->SetUserInitialization(new DetectorConstruction());
 
     // FTFP_BERT provides validated transportation + hadronic physics base.
