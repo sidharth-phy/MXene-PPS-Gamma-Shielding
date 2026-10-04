@@ -30,6 +30,7 @@ Grand total 1,986 runs.
 phase1-narrow-beam/     Geant4 application for the ideal narrow-beam geometry
 phase2-digital-twin/    Geant4 application for the laboratory digital twin
 analysis/               Material property and comparison scripts
+figures/                Scripts that draw Figures 1 to 4 of the manuscript
 data/                   Reference cross-sections and simulation output
 ```
 
@@ -79,6 +80,13 @@ thirty composites, which comes from rounding. A few sets sum to 1.0000 +/- 0.000
 than exactly to unity, which Geant4 renormalises and reports as a warning. The induced
 difference in attenuation is of order one part in ten thousand. The files are left as they
 were run, so that the deposited code is the code that produced the deposited data.
+
+### figures
+
+`fig1.py` to `fig4.py` draw Figures 1 to 4 of the manuscript. Each one computes its
+coordinates from the lattice parameters given in the manuscript or from the geometry
+constants in the corresponding `DetectorConstruction.cc`, so a figure can be checked
+against the geometry it claims to show. See `figures/README.md`.
 
 ### data
 
@@ -135,10 +143,14 @@ Geant4 11.3.2, physics list FTFP_BERT with the electromagnetic component replace
 G4EmLivermorePhysics, which in Geant4 11.x drives the Livermore photon models from the
 G4EMLOW data library derived from the EPICS2017 evaluation. Default production cuts
 throughout, which for the FTFP_BERT reference list is a range cut of 0.7 mm. Runs were
-executed single-threaded.
+executed single-threaded, and both applications pass `G4RunManagerType::SerialOnly` to the
+run manager factory so that a rebuild on a different machine cannot silently switch to the
+multithreaded manager.
 
 No random number seed is set anywhere in this code, so every run starts the default
-Geant4 engine from the same state and the campaign is exactly repeatable. One consequence
+Geant4 engine from the same state, so the campaign is
+repeatable only when rerun with the same threading configuration and the same build. One
+consequence
 is that the five thickness runs for a given material and energy replay the same primary
 photon sequence, so they are not independent samples.
 

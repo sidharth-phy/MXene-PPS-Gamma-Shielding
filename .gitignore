@@ -8,3 +8,5 @@ temp_p2.mac
 spectra/
 *.root
 .DS_Store
+Figure*.png
+Figure*.pdf
