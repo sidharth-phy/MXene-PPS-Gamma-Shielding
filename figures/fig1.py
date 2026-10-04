@@ -32,20 +32,28 @@ COL = {'Ti': '#d9b63a', 'C': '#181818', 'O': '#e8471c'}
 RAD = {'Ti': 0.40, 'C': 0.25, 'O': 0.30}
 
 # plane name, element, height, in-plane offset
-PLANES = [('O_top',  'O',  T_ML / 2,                0.0),
-          ('Ti_top', 'Ti', T_ML / 2 - G_TIO,        0.0),
-          ('C_top',  'C',  G_TIC,                  -DX),
-          ('Ti_mid', 'Ti', 0.0,                 -2 * DX),
-          ('C_bot',  'C', -G_TIC,               -3 * DX),
-          ('Ti_bot', 'Ti', -(T_ML / 2 - G_TIO), -4 * DX),
-          ('O_bot',  'O', -T_ML / 2,            -4 * DX)]
+# The offset accumulates by -a/3 from one plane to the next. The lattice repeats
+# every a, so each offset is folded into the interval (-a/2, a/2]. That leaves the
+# geometry untouched and keeps the sheet level across the drawing instead of
+# marching sideways from the top plane to the bottom one.
+def fold(k):
+    return ((k * -DX + A_IN / 2) % A_IN) - A_IN / 2
 
-X0, X1 = -0.35, (N_CELL - 1) * A_IN + 0.35         # drawing window across the sheet
+
+PLANES = [('O_top',  'O',  T_ML / 2,             fold(0)),
+          ('Ti_top', 'Ti', T_ML / 2 - G_TIO,     fold(0)),
+          ('C_top',  'C',  G_TIC,                fold(1)),
+          ('Ti_mid', 'Ti', 0.0,                  fold(2)),
+          ('C_bot',  'C', -G_TIC,                fold(3)),
+          ('Ti_bot', 'Ti', -(T_ML / 2 - G_TIO),  fold(4)),
+          ('O_bot',  'O', -T_ML / 2,             fold(4))]
 
 plane = {}
 for name, el, z, off in PLANES:
-    xs = [off + i * A_IN for i in range(-2, N_CELL + 2)]
-    plane[name] = [(x, z, el) for x in xs if X0 <= x <= X1]
+    plane[name] = [(off + i * A_IN, z, el) for i in range(N_CELL)]
+
+X0 = min(p[0] for v in plane.values() for p in v)
+X1 = max(p[0] for v in plane.values() for p in v)
 
 ZT = dict((n, zz) for n, _, zz, _ in PLANES)
 
@@ -109,7 +117,7 @@ x_c_top = sorted(p[0] for p in plane['C_top'])
 x_ti_bot = sorted(p[0] for p in plane['Ti_bot'])
 
 
-def lab(x, y, s, size=17, ha='center'):
+def lab(x, y, s, size=19, ha='center'):
     ax.text(x, y, s, fontsize=size, ha=ha, va='center', zorder=9,
             path_effects=[pe.withStroke(linewidth=3.4, foreground='white')])
 
@@ -134,7 +142,7 @@ ax.annotate('', xy=(xd, T_ML / 2), xytext=(xd, -T_ML / 2),
             arrowprops=dict(arrowstyle='<->', color='black', lw=1.2))
 for zz in (T_ML / 2, -T_ML / 2):
     ax.plot([X1 - 0.6, xd + 0.35], [zz, zz], color='black', lw=0.8, zorder=3)
-lab(xd + 0.5, 0.0, '%.3f Å' % T_ML, size=15, ha='left')
+lab(xd + 0.5, 0.0, '%.3f Å' % T_ML, size=17, ha='left')
 
 # in-plane lattice constant
 ya = -T_ML / 2 - 0.95
@@ -142,22 +150,22 @@ ax.annotate('', xy=(x_ti_bot[1] + A_IN, ya), xytext=(x_ti_bot[1], ya),
             arrowprops=dict(arrowstyle='<->', color='black', lw=1.2))
 for xx in (x_ti_bot[1], x_ti_bot[1] + A_IN):
     ax.plot([xx, xx], [ya - 0.3, ya + 0.3], color='black', lw=0.8)
-lab(x_ti_bot[1] + A_IN / 2, ya - 0.72, 'a = %.3f Å' % A_IN, size=15)
+lab(x_ti_bot[1] + A_IN / 2, ya - 0.72, 'a = %.3f Å' % A_IN, size=17)
 
-lab(X1 - 0.4, -T_ML / 2 - 2.7, 'Ti$_3$C$_2$O$_2$', size=28)
+lab(X1 - 0.4, -T_ML / 2 - 2.7, 'Ti$_3$C$_2$O$_2$', size=30)
 
 # legend
 hx, hy = X1 + 3.1, -T_ML / 2 + 0.55
-ax.add_patch(FancyBboxPatch((hx - 0.85, hy - 2.55), 3.5, 3.2,
+ax.add_patch(FancyBboxPatch((hx - 0.8, hy - 2.5), 4.6, 3.25,
                             boxstyle='round,pad=0.12', facecolor='white',
                             edgecolor='#2b2b2b', lw=1.1, zorder=7))
-ax.text(hx + 0.9, hy + 0.32, 'Atom legend', fontsize=14, ha='center',
+ax.text(hx + 1.5, hy + 0.35, 'Atom legend', fontsize=15, ha='center',
         va='center', zorder=8, fontweight='bold')
 for i, (el, name) in enumerate([('Ti', 'Titanium'), ('C', 'Carbon'), ('O', 'Oxygen')]):
     yy = hy - 0.45 - i * 0.68
     ax.add_patch(Circle((hx, yy), 0.27, facecolor=COL[el], edgecolor='#2b2b2b',
                         lw=0.9, zorder=8))
-    ax.text(hx + 0.5, yy, '%s  %s' % (el, name), fontsize=13, va='center', zorder=8)
+    ax.text(hx + 0.47, yy, '%s  %s' % (el, name), fontsize=14, va='center', zorder=8)
 
 ax.set_xlim(X0 - 5.0, X1 + 7.6)
 ax.set_ylim(-T_ML / 2 - 3.5, T_ML / 2 + 3.4)
