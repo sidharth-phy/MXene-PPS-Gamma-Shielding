@@ -15,6 +15,5 @@ Run any of them with `python3 figures/figN.py`. Output is a 500 dpi PNG in the w
 `render_all.py` runs all four and writes a vector PDF beside each PNG, which is the form most
 journals ask for at typesetting. Only `matplotlib` and `numpy` are needed.
 
-The scripts were written with the assistance of Claude (Anthropic), as recorded in the
-manuscript's declaration of generative AI use. The figures themselves are plotted output, not
-generated images: every coordinate in them is computed from the constants listed above.
+The figures are plotted output rather than generated images: every coordinate in them
+is computed from the constants listed above.
