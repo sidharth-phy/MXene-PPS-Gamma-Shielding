@@ -105,6 +105,4 @@ ax.axis('off')
 plt.tight_layout(pad=0.1)
 fig.savefig('Figure3_Phase2_schematic.png', dpi=500,
             bbox_inches='tight', facecolor='white')
-fig.savefig('Figure3_Phase2_schematic.pdf',
-            bbox_inches='tight', facecolor='white')
 print('ok')

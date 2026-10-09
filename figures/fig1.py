@@ -3,7 +3,7 @@
 
 Geometry comes from the two lattice parameters quoted in Section 2.5.2 of the
 manuscript, the in-plane constant a = 3.083 A and the single-layer thickness of
-5.808 A taken from the first-principles monolayer of reference [18].
+5.808 A taken from the first-principles monolayer of reference [23] of the manuscript.
 
 The seven atomic planes are O, Ti, C, Ti, C, Ti, O. Successive planes are offset
 in plane by a/3, which is the ABC stacking of close-packed sheets, so each carbon
@@ -11,7 +11,8 @@ sits in the hollow of the titanium triangle above it and of the one below it. In
 this side projection that offset gives every atom two bonds to the plane below,
 one at a/3 and one at 2a/3, which is why the two bonds leaving an atom do not
 make the same angle with the sheet. Every coordinate is computed from the two
-lattice parameters. Nothing is placed by hand."""
+lattice parameters, except the titanium to oxygen plane separation G_TIO, which is a
+drawing choice that fixes how the seven planes are spaced inside the stated thickness."""
 import matplotlib
 matplotlib.use('Agg')
 import numpy as np

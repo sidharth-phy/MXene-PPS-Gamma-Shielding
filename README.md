@@ -40,7 +40,7 @@ data/                   Reference cross-sections and simulation output
 `macros/`, and `run_phase1.py` which drives the 930-run production campaign by writing a
 temporary macro per run and parsing the transmitted count from stdout.
 
-Scoring is in `src/SteppingAction.cc`. All secondaries are killed at creation, and a
+Scoring is in `src/SteppingAction.cc`. All secondaries are terminated at the end of their first tracking step, and a
 primary is counted only if it reaches the detector plane having lost under 0.1 keV and
 with a momentum z-component above 0.999999, which enforces the narrow-beam condition
 assumed by the Beer-Lambert law and by the NIST/XCOM tabulations.

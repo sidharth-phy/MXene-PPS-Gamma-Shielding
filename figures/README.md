@@ -1,8 +1,9 @@
 # Figure scripts
 
-Every schematic figure in the manuscript is produced by one of these scripts. They take no
-input beyond the constants written in the manuscript and in the Geant4 geometry source, so each
-figure can be regenerated and checked against the geometry it claims to show.
+Every schematic figure in the manuscript is produced by one of these scripts. Apart from one drawing constant in `fig1.py`, the separation between the titanium and oxygen
+planes, they take no input beyond the constants written in the manuscript and in the Geant4
+geometry source, so each figure can be regenerated and checked against the geometry it claims
+to show.
 
 | Script | Figure | Source of the numbers it draws |
 |---|---|---|
@@ -15,5 +16,6 @@ Run any of them with `python3 figures/figN.py`. Output is a 500 dpi PNG in the w
 `render_all.py` runs all four and writes a vector PDF beside each PNG, which is the form most
 journals ask for at typesetting. Only `matplotlib` and `numpy` are needed.
 
-The figures are plotted output rather than generated images: every coordinate in them
-is computed from the constants listed above.
+The scripts were written with the assistance of Claude (Anthropic), as recorded in the
+manuscript's declaration of generative AI use. The figures themselves are plotted output, not
+generated images: every coordinate in them is computed from the constants listed above.
