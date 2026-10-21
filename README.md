@@ -19,10 +19,12 @@ Thirty-one composite formulations (pure PPS plus five fillers at 5, 10, 15, 20, 
 | Scoring | transmitted primary count | total energy deposited in the crystal, Gaussian-broadened |
 | Production runs | 930 | 930 |
 | Calibration runs (G4_Pb, G4_W) | 60 | 60 |
+| Control runs (TiC, TiO2 at 30 wt %) | 60 | not applicable |
 | Air baselines | not required | 6 |
-| Total | 990 | 996 |
+| Total | 1,050 | 996 |
 
-Grand total 2,046 runs, including the 60 Phase 1 control runs described below.
+Grand total 2,046 runs. The 60 Phase 1 control runs sit outside the 31-material
+design matrix and are described below.
 
 ## Layout
 
@@ -30,7 +32,7 @@ Grand total 2,046 runs, including the 60 Phase 1 control runs described below.
 phase1-narrow-beam/     Geant4 application for the ideal narrow-beam geometry
 phase2-digital-twin/    Geant4 application for the laboratory replica geometry
 analysis/               Material property and comparison scripts
-figures/                Scripts that draw Figures 1 to 4 of the manuscript
+figures/                Scripts that draw Figures 1 to 10 of the manuscript
 data/                   Reference cross-sections and simulation output
 ```
 
@@ -87,10 +89,11 @@ were run, so that the deposited code is the code that produced the deposited dat
 
 ### figures
 
-`fig1.py` to `fig4.py` draw Figures 1 to 4 of the manuscript. Each one computes its
-coordinates from the lattice parameters given in the manuscript or from the geometry
-constants in the corresponding `DetectorConstruction.cc`, so a figure can be checked
-against the geometry it claims to show. See `figures/README.md`.
+`fig1.py` to `fig4.py` draw the four schematic figures of the manuscript. Each one
+computes its coordinates from the lattice parameters given in the manuscript or from the
+geometry constants in the corresponding `DetectorConstruction.cc`, so a figure can be
+checked against the geometry it claims to show. `fig_series.py` draws Figures 5 to 10
+from the Phase 1 master dataset. See `figures/README.md`.
 
 ### data
 
