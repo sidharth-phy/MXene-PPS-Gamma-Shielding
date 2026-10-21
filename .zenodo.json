@@ -8,7 +8,7 @@
       "affiliation": "Department of Physics, Sardar Vallabhbhai National Institute of Technology, Surat, India"
     }
   ],
-  "description": "Two-phase Geant4 Monte Carlo study of oxygen-terminated Ti3C2O2 MXene in a polyphenylene sulphide matrix, benchmarked against Pb, W, BaSO4 and Bi2O3 fillers across six gamma energies, five thicknesses and six filler loadings. Contains the Geant4 applications for both phases, the run drivers, the analysis scripts, the figure scripts and the full master datasets.",
+  "description": "Two-phase Geant4 Monte Carlo study of oxygen-terminated Ti3C2O2 MXene in a polyphenylene sulphide matrix, benchmarked against Pb, W, BaSO4 and Bi2O3 fillers across six gamma energies, five thicknesses and six filler loadings. Contains the Geant4 applications for both phases, the run drivers, the analysis scripts, the figure scripts and the full master datasets. Version 1.2.0 adds 60 Phase 1 control runs for titanium carbide and rutile titanium dioxide at 30 wt %, their master dataset, the two Geant4 material definitions and the matching NIST/XCOM reference values.",
   "keywords": [
     "gamma-ray shielding",
     "MXene",
@@ -17,7 +17,9 @@
     "Geant4",
     "Monte Carlo",
     "linear attenuation coefficient",
-    "NIST XCOM"
+    "NIST XCOM",
+    "titanium carbide",
+    "titanium dioxide"
   ],
-  "version": "1.1.0"
+  "version": "1.2.0"
 }
