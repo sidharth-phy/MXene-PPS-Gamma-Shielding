@@ -22,13 +22,13 @@ Thirty-one composite formulations (pure PPS plus five fillers at 5, 10, 15, 20, 
 | Air baselines | not required | 6 |
 | Total | 990 | 996 |
 
-Grand total 1,986 runs.
+Grand total 2,046 runs, including the 60 Phase 1 control runs described below.
 
 ## Layout
 
 ```
 phase1-narrow-beam/     Geant4 application for the ideal narrow-beam geometry
-phase2-digital-twin/    Geant4 application for the laboratory digital twin
+phase2-digital-twin/    Geant4 application for the laboratory replica geometry
 analysis/               Material property and comparison scripts
 figures/                Scripts that draw Figures 1 to 4 of the manuscript
 data/                   Reference cross-sections and simulation output
@@ -37,8 +37,11 @@ data/                   Reference cross-sections and simulation output
 ### phase1-narrow-beam
 
 `shielding.cc` with `src/` and `include/`, a `CMakeLists.txt`, visualisation macros under
-`macros/`, and `run_phase1.py` which drives the 930-run production campaign by writing a
-temporary macro per run and parsing the transmitted count from stdout.
+`macros/`, `run_phase1.py` which drives the 930-run production campaign by writing a
+temporary macro per run and parsing the transmitted count from stdout, and
+`run_controls.py` which drives the 60-run control campaign for TiC and rutile
+TiO2 at 30 wt %. The two control compounds sit outside the 31-material design
+matrix and are reported separately in the manuscript.
 
 Scoring is in `src/SteppingAction.cc`. All secondaries are terminated at the end of their first tracking step, and a
 primary is counted only if it reaches the detector plane having lost under 0.1 keV and
@@ -71,7 +74,8 @@ axis, adopted for computational economy. No primary strikes the collimator body.
 | `nist_comparison.py` | Regenerates `data/phase1/Phase1_Validation_Dataset.csv` from the master dataset and the NIST/XCOM reference |
 
 `composite_density.py` takes filler densities of Pb 11.34, BaSO4 4.50, W 19.25,
-Bi2O3 8.90 and Ti3C2O2 5.44 g/cm3, with PPS at 1.35 g/cm3. These are the values that
+Bi2O3 8.90 and Ti3C2O2 5.44 g/cm3, with PPS at 1.35 g/cm3, and TiC 4.93 and
+TiO2 4.23 g/cm3 for the two control compounds. These are the values that
 produced the composite densities hard-coded in both `DetectorConstruction.cc` files.
 
 The elemental mass fractions in the two applications were entered independently and agree

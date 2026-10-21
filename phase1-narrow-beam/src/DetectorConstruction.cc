@@ -121,7 +121,13 @@ void DetectorConstruction::DefineMaterials()
     G4Material* Ti3C2O2_30Wt = new G4Material("Ti3C2O2_30Wt", 1.7432*g/cm3, 5);
     Ti3C2O2_30Wt->AddElement(elC, 0.5025); Ti3C2O2_30Wt->AddElement(elH, 0.0261); Ti3C2O2_30Wt->AddElement(elS, 0.2075); Ti3C2O2_30Wt->AddElement(elTi, 0.2158); Ti3C2O2_30Wt->AddElement(elO, 0.0481);
 
-    // 8. Pure NIST Calibration Materials
+    // 8. Titanium control compounds at 30 wt %
+    G4Material* TiC_30Wt = new G4Material("TiC_30Wt", 1.7260*g/cm3, 4);
+    TiC_30Wt->AddElement(elC, 0.5266); TiC_30Wt->AddElement(elH, 0.0261); TiC_30Wt->AddElement(elS, 0.2075); TiC_30Wt->AddElement(elTi, 0.2398);
+    G4Material* TiO2_30Wt = new G4Material("TiO2_30Wt", 1.6965*g/cm3, 5);
+    TiO2_30Wt->AddElement(elC, 0.4664); TiO2_30Wt->AddElement(elH, 0.0261); TiO2_30Wt->AddElement(elS, 0.2075); TiO2_30Wt->AddElement(elTi, 0.1798); TiO2_30Wt->AddElement(elO, 0.1202);
+
+    // 9. Pure NIST Calibration Materials
     nist->FindOrBuildMaterial("G4_Pb");
     nist->FindOrBuildMaterial("G4_W");
 

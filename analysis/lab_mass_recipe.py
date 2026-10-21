@@ -5,7 +5,7 @@ import math
 # 1. CONSTANTS & PROPERTIES
 # ==========================================
 rho_pps = 1.35
-densities_filler = {'Pb': 11.34, 'BaSO4': 4.50, 'W': 19.25, 'Bi2O3': 8.90, 'Ti3C2O2': 5.44}
+densities_filler = {'Pb': 11.34, 'BaSO4': 4.50, 'W': 19.25, 'Bi2O3': 8.90, 'Ti3C2O2': 5.44, 'TiC': 4.93, 'TiO2': 4.23}
 
 # Volume of a 5cm diameter, 2mm thick disc
 volume_cm3 = math.pi * (2.5**2) * 0.2

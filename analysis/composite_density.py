@@ -12,7 +12,7 @@ densities_filler = {
     'BaSO4': 4.50,
     'W': 19.25,
     'Bi2O3': 8.90,
-    'Ti3C2O2': 5.44
+    'Ti3C2O2': 5.44, 'TiC': 4.93, 'TiO2': 4.23
 }
 
 # Disc dimensions for physical mass calculation
