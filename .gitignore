@@ -6,7 +6,17 @@ __pycache__/
 temp.mac
 temp_p2.mac
 spectra/
+!data/phase2/spectra/
 *.root
 .DS_Store
 Figure*.png
 Figure*.pdf
+Final_Plot_*.png
+Efficiency_Curves_Canvas.png
+MAC_vs_Energy.png
+HVL_vs_Energy.png
+RPE_at_10mm.png
+Validation_Error_BarChart.png
+NIST_Overlay_Plot.png
+MXene_Enhancement_Factor.png
+Z_eff_vs_Weight.png
