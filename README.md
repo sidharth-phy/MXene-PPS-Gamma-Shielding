@@ -197,3 +197,10 @@ If you use this code or these datasets, please cite the associated manuscript. S
 ## Licence
 
 MIT. See `LICENSE`.
+
+## DOI
+
+Archived on Zenodo. Concept DOI, always the latest version:
+https://doi.org/10.5281/zenodo.23406292
+
+Release v1.5.0: https://doi.org/10.5281/zenodo.24348894

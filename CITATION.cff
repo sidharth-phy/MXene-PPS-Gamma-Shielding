@@ -10,6 +10,13 @@ abstract: >-
 authors:
   - family-names: Suresh
     given-names: Sidharth
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.23406292
+    description: Concept DOI, resolves to the latest version
+  - type: doi
+    value: 10.5281/zenodo.24348894
+    description: Version DOI for release v1.5.0
 version: 1.5.0
 date-released: 2026-11-18
 repository-code: https://github.com/sidharth-phy/MXene-PPS-Gamma-Shielding
