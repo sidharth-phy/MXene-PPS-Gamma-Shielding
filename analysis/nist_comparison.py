@@ -42,11 +42,17 @@ DEFAULT_NIST = os.path.join(ROOT, "data", "reference", "NIST_XCOM_values.txt")
 DEFAULT_MASTER = os.path.join(ROOT, "data", "phase1", "Phase1_Master_Dataset.txt")
 DEFAULT_OUT = os.path.join(ROOT, "data", "phase1", "Phase1_Validation_Dataset.csv")
 
-# Column 7 of the XCOM block, zero-indexed, is total attenuation with coherent
-# scattering. Column 8 (index 7) excludes coherent scattering and is not used.
+# The seventh of the eight XCOM columns, index 6, is total attenuation with
+# coherent scattering. The eighth, index 7, excludes it and is not used.
 TOTAL_WITH_COHERENT = 6
 
 HEADER_RE = re.compile(r"^(\d+)\s+(Pb|W|BaSO4|Bi2O3|Ti3C2O2)$")
+# The reference file ends with two control blocks, 30 TiC and 30 TiO2, which are
+# not part of the 31 composites. They have to be recognised and skipped rather
+# than merely not matched: a block header that falls through leaves the previous
+# material selected, and the control numbers then overwrite it. That is what
+# used to happen to Ti3C2O2_30Wt, the block immediately before them.
+ANY_BLOCK_RE = re.compile(r"^\d+\s+\S")
 
 
 def get_density(mat_name):
@@ -71,6 +77,9 @@ def load_nist_data(filepath):
             m = HEADER_RE.match(line)
             if m:
                 current = "{}_{}Wt".format(m.group(2), m.group(1))
+                continue
+            if ANY_BLOCK_RE.match(line) and "\t" not in line:
+                current = None          # a block this study does not use
                 continue
             cols = line.split("\t")
             if len(cols) != 8 or current is None:

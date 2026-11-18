@@ -8,7 +8,7 @@
       "affiliation": "Department of Physics, Sardar Vallabhbhai National Institute of Technology, Surat, India"
     }
   ],
-  "description": "Two-phase Geant4 Monte Carlo study of oxygen-terminated Ti3C2O2 MXene in a polyphenylene sulphide matrix, benchmarked against Pb, W, BaSO4 and Bi2O3 fillers across six gamma energies, five thicknesses and six filler loadings. Contains the Geant4 applications for both phases, the run drivers, the analysis scripts, a plotting script for every figure in the manuscript and the full datasets. Version 1.4.0 adds the remaining Phase 2 spectrum files, so all 996 are deposited and every photopeak integral in the Phase 2 master dataset can be recomputed from the raw histograms.",
+  "description": "Two-phase Geant4 Monte Carlo study of oxygen-terminated Ti3C2O2 MXene in a polyphenylene sulphide matrix, benchmarked against Pb, W, BaSO4 and Bi2O3 fillers across six gamma energies, five thicknesses and six filler loadings. Contains the Geant4 applications for both phases, the run drivers, the analysis scripts, a plotting script for every figure in the manuscript and the full datasets. All 996 Phase 2 spectrum files are deposited, so every photopeak integral in the Phase 2 master dataset can be recomputed from the raw histograms. Version 1.5.0 carries the figure scripts for the fifteen-figure arrangement of the manuscript, each drawn to the publisher's artwork limits and verified to reproduce the submitted artwork byte for byte, together with two added verification scripts and a fix to the reference-file parsing in the Phase 1 comparison script.",
   "keywords": [
     "gamma-ray shielding",
     "MXene",
@@ -21,5 +21,5 @@
     "titanium carbide",
     "titanium dioxide"
   ],
-  "version": "1.4.0"
+  "version": "1.5.0"
 }

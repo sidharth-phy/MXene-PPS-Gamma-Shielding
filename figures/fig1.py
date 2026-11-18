@@ -14,10 +14,28 @@ make the same angle with the sheet. Every coordinate is computed from the two
 lattice parameters, except the titanium to oxygen plane separation G_TIO, which is a
 drawing choice that fixes how the seven planes are spaced inside the stated thickness."""
 import matplotlib
+# Start from matplotlib's own defaults, not from whatever the machine's
+# matplotlibrc holds. A personal config that sets, say, axes.grid or
+# savefig.dpi otherwise changes the deposited figures on someone else's
+# machine, which is the one thing this deposit exists to prevent.
+matplotlib.rcdefaults()
 matplotlib.use('Agg')
+# Typography is pinned here so these scripts redraw the published figures on
+# any machine. DejaVu Sans ships with matplotlib, so it is present everywhere,
+# and mathtext is set to the same face: without this, chemical subscripts are
+# typeset in a different font from the characters around them. TrueType
+# (type 42) rather than Type 3, which Elsevier does not accept in vector
+# artwork.
+matplotlib.rcParams.update({
+    'font.family': 'DejaVu Sans',
+    'font.sans-serif': ['DejaVu Sans'],
+    'mathtext.fontset': 'dejavusans',
+    'pdf.fonttype': 42,
+    'ps.fonttype': 42,
+})
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.patches import Circle, FancyBboxPatch
+from matplotlib.patches import Circle
 import matplotlib.patheffects as pe
 
 A_IN = 3.083            # A, in-plane lattice constant
@@ -58,7 +76,11 @@ X1 = max(p[0] for v in plane.values() for p in v)
 
 ZT = dict((n, zz) for n, _, zz, _ in PLANES)
 
-fig, ax = plt.subplots(figsize=(11.4, 8.4))
+# Canvas sized so that the chemical subscripts, which matplotlib sets at
+# 0.7 of the surrounding size, still clear 6 pt at the width this figure
+# is printed. With a tight bounding box the printed size follows the
+# ratio of font size to canvas, so the drawing area sets it.
+fig, ax = plt.subplots(figsize=(7.28, 5.37))
 
 
 def rod(p, q, c1, c2, lw=6.5, dbl=False):
@@ -128,14 +150,17 @@ def arrow(x0, y0, x1, y1):
                 arrowprops=dict(arrowstyle='-|>', color='black', lw=1.4))
 
 
-lab(x_ti_top[1] + 0.2, ZT['O_top'] + 2.3, 'Oxygen (O)\nsurface termination')
-arrow(x_ti_top[1] + 0.2, ZT['O_top'] + 1.6, x_ti_top[1] + 0.05, ZT['O_top'] + 0.5)
-lab(X0 - 3.0, ZT['Ti_top'] + 1.45, 'Titanium (Ti)\nlayers')
-arrow(X0 - 2.3, ZT['Ti_top'] + 0.9, X0 - 0.55, ZT['Ti_top'] + 0.2)
-lab(x_c_top[-1] + 1.3, ZT['O_top'] + 2.3, 'Carbon (C)\natoms')
-arrow(x_c_top[-1] + 0.85, ZT['O_top'] + 1.6, x_c_top[-1] + 0.12, ZT['C_top'] + 0.38)
-lab(X0 - 2.75, ZT['Ti_bot'] - 0.35, 'Ti surface\nlayer')
-arrow(X0 - 1.75, ZT['Ti_bot'] - 0.35, x_ti_bot[0] - 0.5, ZT['Ti_bot'] - 0.12)
+lab(x_ti_top[1] + 0.2, ZT['O_top'] + 2.75, 'Oxygen (O)\nsurface termination')
+arrow(x_ti_top[1] + 0.2, ZT['O_top'] + 1.95, x_ti_top[1] + 0.05, ZT['O_top'] + 0.5)
+lab(X0 - 4.3, ZT['Ti_top'] + 0.95, 'Titanium (Ti)\nlayers')
+arrow(X0 - 3.1, ZT['Ti_top'] + 0.45, X0 - 0.55, ZT['Ti_top'] + 0.2)
+lab(x_c_top[-1] + 1.3, ZT['O_top'] + 2.75, 'Carbon (C)\natoms')
+arrow(x_c_top[-1] + 0.85, ZT['O_top'] + 1.95, x_c_top[-1] + 0.12, ZT['C_top'] + 0.38)
+# The three titanium planes carry one label between them, as the oxygen and
+# carbon planes do. Naming the top plane 'Titanium (Ti) layers' and the
+# bottom one 'Ti surface layer' gave the same species two names and left the
+# middle plane unnamed, which invites the reader to look for a difference
+# that is not there.
 
 # thickness dimension, outer oxygen plane to outer oxygen plane
 xd = X1 + 1.0
@@ -153,22 +178,13 @@ for xx in (x_ti_bot[1], x_ti_bot[1] + A_IN):
     ax.plot([xx, xx], [ya - 0.3, ya + 0.3], color='black', lw=0.8)
 lab(x_ti_bot[1] + A_IN / 2, ya - 0.72, 'a = %.3f Å' % A_IN, size=17)
 
-lab(X1 - 0.4, -T_ML / 2 - 2.7, 'Ti$_3$C$_2$O$_2$', size=30)
+lab(X1 - 1.6, -T_ML / 2 - 2.7, 'Ti$_3$C$_2$O$_2$', size=30)
 
-# legend
-hx, hy = X1 + 3.1, -T_ML / 2 + 0.55
-ax.add_patch(FancyBboxPatch((hx - 0.8, hy - 2.5), 4.6, 3.25,
-                            boxstyle='round,pad=0.12', facecolor='white',
-                            edgecolor='#2b2b2b', lw=1.1, zorder=7))
-ax.text(hx + 1.5, hy + 0.35, 'Atom legend', fontsize=15, ha='center',
-        va='center', zorder=8, fontweight='bold')
-for i, (el, name) in enumerate([('Ti', 'Titanium'), ('C', 'Carbon'), ('O', 'Oxygen')]):
-    yy = hy - 0.45 - i * 0.68
-    ax.add_patch(Circle((hx, yy), 0.27, facecolor=COL[el], edgecolor='#2b2b2b',
-                        lw=0.9, zorder=8))
-    ax.text(hx + 0.47, yy, '%s  %s' % (el, name), fontsize=14, va='center', zorder=8)
+# No atom key: each of the three species is already named on the drawing,
+# with a leader to an atom of its own colour, so a key repeats what the
+# labels say and crowds the dimension beside it.
 
-ax.set_xlim(X0 - 5.0, X1 + 7.6)
+ax.set_xlim(X0 - 6.0, X1 + 4.6)
 ax.set_ylim(-T_ML / 2 - 3.5, T_ML / 2 + 3.4)
 ax.set_aspect('equal')
 ax.axis('off')

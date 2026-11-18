@@ -32,7 +32,7 @@ design matrix and are described below.
 phase1-narrow-beam/     Geant4 application for the ideal narrow-beam geometry
 phase2-digital-twin/    Geant4 application for the laboratory replica geometry
 analysis/               Material property and comparison scripts
-figures/                Scripts that draw Figures 1 to 24 of the manuscript
+figures/                Scripts that draw Figures 1 to 15 of the manuscript
 data/                   Reference cross-sections and simulation output
 ```
 
@@ -74,6 +74,7 @@ axis, adopted for computational economy. No primary strikes the collimator body.
 | `effective_atomic_number.py` | Z_eff by Mayneord's power law, m = 2.94 |
 | `lab_mass_recipe.py` | Masses of filler and matrix for a 50 mm x 2 mm disc |
 | `nist_comparison.py` | Regenerates `data/phase1/Phase1_Validation_Dataset.csv` from the master dataset and the NIST/XCOM reference |
+| `verify_phase2_derived.py` | Checks every derived column of `data/phase2/Phase2_Data_Validated.txt` against the counts it came from and against the NIST/XCOM reference. Writes nothing |
 
 `composite_density.py` takes filler densities of Pb 11.34, BaSO4 4.50, W 19.25,
 Bi2O3 8.90 and Ti3C2O2 5.44 g/cm3, with PPS at 1.35 g/cm3, and TiC 4.93 and
@@ -93,10 +94,12 @@ were run, so that the deposited code is the code that produced the deposited dat
 computes its coordinates from the lattice parameters given in the manuscript or from the
 geometry constants in the corresponding `DetectorConstruction.cc`, so a figure can be
 checked against the geometry it claims to show. `fig_series.py` draws Figures 5 to 10,
-`fig_summary.py` Figures 11, 12, 23 and 24, `fig_spectra.py` Figures 13 to 18,
-`fig_lac_loading.py` Figure 19 and `fig_hvl_rpe.py` Figures 20 to 22, all from the deposited
-Phase 2 datasets. `render_all.py` runs the lot and writes all 24 manuscript figures as a PNG
-and a vector PDF each, with no arguments, from a clean clone. See `figures/README.md`.
+`fig_overlay_dev_stack.py` Figure 11, `fig_spectra_panel.py` Figure 12,
+`fig_lac_loading.py` Figure 13, `fig_merit_panel.py` Figure 14 and `fig_zeff_ef_panel.py`
+Figure 15, all from the deposited Phase 2 datasets. `render_all.py` runs the lot and writes
+all 15 manuscript figures as a PNG and a vector PDF each, with no arguments, from a clean
+clone, and `check_fig.py` measures a rendered figure against the publisher's artwork
+limits. See `figures/README.md`.
 
 ### data
 
@@ -151,8 +154,8 @@ python3 run_phase1.py                 # 930 production runs
 python3 run_phase1.py --calibration   # 60 calibration runs on G4_Pb and G4_W
 ```
 
-The build copies `run_phase1.py` and the visualisation macros next to the executable, so
-no manual copying is needed.
+The build copies `run_phase1.py`, `run_controls.py` and the visualisation macros next to
+the executable, so no manual copying is needed.
 
 Phase 2 builds the same way. Run `quick_check_phase2.py` first, which executes four short
 cases and reports the photopeak windows, before committing to the full campaign.
